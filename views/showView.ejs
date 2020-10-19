@@ -1,0 +1,39 @@
+<%- include('./partials/header.ejs') %>
+
+
+
+<main role="main" class="container mt-5">
+    <div class="row">
+      <div class="col-md-8 blog-main">
+        <div class="blog-post">
+            <div class="card" style="position: relative;height:100%">
+                <div class="img-pos">
+                    <img class="card-img-top" src="/uploads/<%= blog.image %>" alt="Card image cap" style="height: 100%;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"><%= blog.title %></h5>
+                    <h6 class="card-subtitle mb-2"><%= blog.createdAt.toLocaleDateString() %></h6>
+                    <p class="card-text"><%= blog.desc%></p>
+                </div>
+            </div>
+        </div>
+      </div>
+      
+      <aside class="col-md-4 blog-sidebar">
+            <% relatedBlogs.forEach(blogs => { %>
+                    <div class="card" style="position: relative;">
+                        <div class="img-pos">
+                            <img class="card-img-top" src="/uploads/<%= blogs.image %>" alt="Card image cap">
+                            <a href="#" class="btn btn-warninig btn-sm chip" style="position: absolute;"><%= blogs.genre %></a>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title"><%= blogs.title %></h5>
+                            <h6 class="card-subtitle mb-2"><%= blogs.createdAt.toLocaleDateString() %></h6>
+                            <p class="card-text"><%= blogs.desc.slice(0, 70) + "..." %></p>
+                            <a href="/<%= blogs.slug%>" class="btn btn-sm btn-outline-info card-anchor">Read More</a>
+                        </div>
+                    </div>
+            <% }); %>
+      </aside>
+    </div>
+  </main>

@@ -1,0 +1,57 @@
+<%- include('./partials/header.ejs') %>
+<div class="backdrop fire">
+    <p class="text fire">Just K Drama Stuff</p>
+    <div class="overlay fire"></div>
+</div>
+<!-- menu filter -->
+<div class="btn-group">
+    <button class="btn-group__item active" id="all">Show all</button>
+    <% genres.forEach(genre => { %>
+    <button class="btn-group__item" id="<%= genre.toLowerCase()%>"><%= genre %></button>
+    <% }); %>
+</div>
+<!-- card view -->
+<div id="parent">
+    <% blogs.forEach(blog => { %>
+    <div class="drama_card filterDiv <%= blog.genre.toLowerCase() %>" id="bright">
+        <div class="info_section">
+            <div class="drama_header">
+                <img class="drama_image" src="/uploads/<%= blog.image %>" />
+                <h1><%= blog.title %></h1>
+                <h4><%= blog.createdAt.toLocaleDateString() %></h4>
+                <span class="genre"><%= blog.genre %></span>
+            </div>
+            <div class="drama_desc">
+                <p class="card-text">
+                    <%= blog.desc.slice(0, 70) + "..." %>
+                </p>
+            </div>
+        </div>
+        <div class="blur_back" style="background-image: url('/uploads/<%= blog.image %>');"></div>
+    </div>
+    <% }); %>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js""></script>
+<script>
+    let $filterDiv = $('.filterDiv');
+    let $btns = $('.btn-group__item').click(function () {
+        if (this.id == 'all') {
+            $filterDiv.show();
+        } else {
+            var $el = $('.' + this.id).show();
+            $filterDiv.not($el).hide();
+        }
+        $btns.removeClass('active');
+        $(this).addClass('active');
+
+    });
+
+
+
+
+</script>
+
+<%- include('./partials/footer.ejs') %>

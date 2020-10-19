@@ -1,0 +1,119 @@
+<%- include('./partials/header.ejs') %>
+
+<div class="container mt-5 w-50">
+    <% if (success) { %>
+    <div class="alert alert-info text-center font-weight-bold" role="alert">
+        <%= success %>
+    </div>
+    <% } %>
+
+    <h1 class="text-center text-success">ADD BLOG</h1>
+    <form action="/blogs/add-blog" method="POST" enctype="multipart/form-data" class="mt-4">
+        <div class="form-group">
+            <label for="title" class="text-muted">Title</label>
+            <input type="text" class="form-control" id="title" name="title" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="textarea" class="text-muted">Description</label>
+            <textarea type="text" class="form-control" id="textarea" name="desc"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="inputAddress" class="text-muted">Genre</label>
+            <input type="text" class="form-control" id="genre" name="genre">
+        </div>
+        <div class="form-group">
+            <label for="fileinput" class="text-muted">Choose an image</label>
+            <input onchange="previewFile(this);" type="file" class="form-control-file" id="fileinput" name="image"
+                multiple>
+        </div>
+        <div class="form-group">
+            <img id="previewImg" src="../uploads/thumbnail.png" alt="your image"
+                style="max-width: 225px;max-height:150px" />
+        </div>
+        <button type="submit" class="btn btn-raised btn-success btn-block">Add blog</button>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script>
+            function previewFile(input) {
+                var file = $("input[type=file]").get(0).files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        $("#previewImg").attr("src", reader.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+        </script>
+    </form>
+    <input type="text" class="form-control mt-4" id="searchTxt" placeholder="Search by title..." autocomplete="off">
+</div>
+<div class="container w-75 mt-5">
+    <table class="table table-striped" id="myTable">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Genre</th>
+                <th scope="col">Desc</th>
+                <th scope="col">Image</th>
+                <th scope="col">Created On</th>
+                <th scope="col" colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if(blogs.length > 0) { let i = 1; %>
+            <% blogs.forEach(blog => { %>
+            <tr>
+                <td><%= i++ %></td>
+                <td><%= blog.title %> </td>
+                <td><%= blog.genre %> </td>
+                <td><%= blog.desc.slice(0, 70) + "..." %> </td>
+                <td><img src="/uploads/<%= blog.image %>" style="width:150px;height:100px" /></td>
+                <td><%= blog.createdAt.toLocaleDateString() %> </td>
+                <td><a href="/blogs/edit-blog/<%= blog._id %>" class="btn btn-raised btn-info">Edit</a></td>
+                <td><a href="/blogs/delete-blog/<%= blog._id %>" class="btn btn-raised btn-danger">Delete</a></td>
+            </tr>
+            <% } ) %>
+            <% } %>
+        </tbody>
+    </table>
+    <div class="alert alert-danger text-center font-weight-bold" id="hide" role="alert" style="display:none">
+        No Data Found
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        document.querySelector('.alert-info').remove()
+    }, 2000);
+
+    let search = document.getElementById("searchTxt");
+    let hide = document.querySelector('#hide');
+    search.addEventListener('keyup', function (e) {
+        let inputVal = e.target.value.toLowerCase();
+        let table = document.getElementById("myTable");
+        let tr = table.getElementsByTagName("tr");
+        let resultsFound = false;
+        for (let i = 0; i < tr.length; i++) {
+            // debugger;
+            let td = tr[i].querySelectorAll("td")[1];
+            if (td) {
+                let txtValue = td.textContent || td.innerText;
+                if (txtValue.toLowerCase().indexOf(inputVal) > -1) {
+                    resultsFound = true;
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+                if (!resultsFound) {
+                    hide.style.display = "block";
+                } else {
+                    hide.style.display = "none";
+                }
+            }
+        }
+    });
+
+</script>
+</body>
+
+</html>
